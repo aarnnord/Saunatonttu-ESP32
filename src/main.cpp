@@ -17,10 +17,11 @@ unsigned long bot_lasttime;
 const int ledPin = LED_BUILTIN;
 int ledStatus = 0;
 
-void blink()
+// Use blink to blink led ;)
+void blink(long time)
 {
   digitalWrite(ledPin, LOW);
-  delay(50);
+  delay(time);
   digitalWrite(ledPin, HIGH);
 }
 
@@ -40,7 +41,7 @@ void handleNewMessages(int numNewMessages)
 
     if (text == "/ledon")
     {
-      digitalWrite(ledPin, LOW); // turn the LED on (HIGH is the voltage level)
+      // digitalWrite(ledPin, LOW); // turn the LED on (HIGH is the voltage level)
       ledStatus = 1;
       bot.sendMessage(chat_id, "Led is ON", "");
     }
@@ -48,7 +49,7 @@ void handleNewMessages(int numNewMessages)
     if (text == "/ledoff")
     {
       ledStatus = 0;
-      digitalWrite(ledPin, HIGH); // turn the LED off (LOW is the voltage level)
+      // digitalWrite(ledPin, HIGH); // turn the LED off (LOW is the voltage level)
       bot.sendMessage(chat_id, "Led is OFF", "");
     }
 
@@ -87,34 +88,22 @@ void setup()
   Serial.begin(9600);
   Serial.println();
 
-  pinMode(ledPin, OUTPUT); // initialize digital ledPin as an output.
-  delay(10);
-  digitalWrite(ledPin, HIGH); // initialize pin as off (active LOW)
+  pinMode(ledPin, OUTPUT); // Initialize digital ledPin as an output.
 
-  // attempt to connect to Wifi network:
-  configTime(0, 0, "pool.ntp.org");      // get UTC time via NTP
-  secured_client.setTrustAnchors(&cert); // Add root certificate for api.telegram.org
+  // Attempt to connect to Wifi network:
+  configTime(0, 0, "pool.ntp.org", "fi.pool.ntp.org", "time.mikes.fi"); // Get UTC time via NTP
+  secured_client.setTrustAnchors(&cert);                                // Add root certificate for api.telegram.org
   Serial.print("Connecting to Wifi SSID ");
   Serial.print(WIFI_SSID);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   while (WiFi.status() != WL_CONNECTED)
   {
+    blink(50);
     Serial.print(".");
-    delay(500);
+    delay(50);
   }
-  Serial.print("\nWiFi connected. IP address: ");
+  Serial.println("\nWiFi connected. IP address: ");
   Serial.println(WiFi.localIP());
-
-  // Check NTP/Time, usually it is instantaneous and you can delete the code below.
-  Serial.print("Retrieving time: ");
-  time_t now = time(nullptr);
-  while (now < 24 * 3600)
-  {
-    Serial.print(".");
-    delay(100);
-    now = time(nullptr);
-  }
-  Serial.println(now);
 }
 
 void loop()
@@ -125,7 +114,8 @@ void loop()
 
     while (numNewMessages)
     {
-      Serial.println("got response");
+      blink(20);
+      Serial.println("New message");
       handleNewMessages(numNewMessages);
       numNewMessages = bot.getUpdates(bot.last_message_received + 1);
     }
