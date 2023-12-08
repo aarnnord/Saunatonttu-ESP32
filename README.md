@@ -18,3 +18,11 @@ Ryhmä: Hämiksen Saunaseura
 | Kiuas laitetään päälle | Viesti saunan lämpiämisestä |
 | Saunan lämpötila yli 70°C | Viesti sauna on lämmin |
 | Kiuas sammutetaan | Viesti kiukaan sammumisesta |
+
+#### LED
+
+| Käytös | Selite |
+| ------ | ------ |
+| Nopeaa vilkuntaa | WIFI-yhteyden muodostamisessa ongelma |
+| Välähdys | Viesti vastaanotettu |
+| Pitkä välähdys | Tapahtuma |
