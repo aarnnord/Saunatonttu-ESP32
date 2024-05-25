@@ -1,14 +1,16 @@
-#include <ESP8266WiFi.h>
+
 #include <UniversalTelegramBot.h>
 
-#include <functions.h>
 #include "../../.env.h"
+#include "ruuvi_tag.h"
+#include "app.h"
+#include <Arduino.h>
 
 bool kiuas_before = false;
 int temperature_before = 0;
 bool ready_before = false;
 
-void handleEvent(bool kiuas, int temperature, UniversalTelegramBot bot)
+void handleEvent(bool kiuas, uint8_t temperature, UniversalTelegramBot bot)
 {
     if (kiuas_before != kiuas)
     {
@@ -48,7 +50,9 @@ bool getKiuas()
     return kiuas_before;
 }
 
-int getTemperature()
+uint8_t getTemperature()
 {
+    receivedTemperatureRequestOverWiFi = True;
+    // uint8_t temperature_before = check_ruuvi_tag_data((uint8_t *)RUUVI_RAWV2, RUUVI_RAWV2ADV_LENGTH, RUUVI_RAWV2_LENGTH);
     return temperature_before;
 }

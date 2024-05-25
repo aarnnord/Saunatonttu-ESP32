@@ -1,14 +1,14 @@
-#include <ESP8266WiFi.h>
+
+#include <WiFi.h>
 #include <WiFiClientSecure.h>
 #include <UniversalTelegramBot.h>
 
-#include <functions.h>
-
 // Handlers
-#include <./handle/message.h>
-#include <./handle/event.h>
+#include <handle/message.h>
+#include <handle/event.h>
 
 #include <../.env.h>
+#include <Arduino.h>
 
 // Mean time between scan messages
 const unsigned long BOT_MTBS = 1000;
@@ -16,7 +16,6 @@ const unsigned long BOT_MTBS = 1000;
 // Mean time between scan events
 const unsigned long EVENT_MTBS = 400;
 
-X509List cert(TELEGRAM_CERTIFICATE_ROOT);
 WiFiClientSecure secured_client;
 UniversalTelegramBot bot(BOT_TOKEN, secured_client);
 
@@ -31,17 +30,14 @@ void setup()
   Serial.begin(9600);
   Serial.println();
 
-  setupLed();
-
   // Attempt to connect to Wifi network:
   configTime(0, 0, "pool.ntp.org", "fi.pool.ntp.org", "time.mikes.fi"); // Get UTC time via NTP
-  secured_client.setTrustAnchors(&cert);                                // Add root certificate for api.telegram.org
+  secured_client.setCACert(TELEGRAM_CERTIFICATE_ROOT);                  // Add root certificate for api.telegram.org
   Serial.print("Connecting to Wifi SSID ");
   Serial.print(WIFI_SSID);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   while (WiFi.status() != WL_CONNECTED)
   {
-    blink(50);
     Serial.print(".");
     delay(50);
   }

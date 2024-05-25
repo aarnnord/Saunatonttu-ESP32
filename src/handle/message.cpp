@@ -1,8 +1,8 @@
 #include <UniversalTelegramBot.h>
 
 #include <./handle/event.h>
-#include <functions.h>
 #include "../../.env.h"
+#include <Arduino.h>
 
 void handleMessage(UniversalTelegramBot bot, telegramMessage msg)
 {
@@ -26,8 +26,6 @@ void handleMessage(UniversalTelegramBot bot, telegramMessage msg)
         Serial.println("Message " + String(msg.message_id) + " skipped");
         return;
     }
-
-    blink(10);
 
     // Avaa komennot ja selitteet
     if (text == "/apua" or text == "/start")

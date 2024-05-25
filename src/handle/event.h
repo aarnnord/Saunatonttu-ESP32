@@ -1,5 +1,6 @@
 #include <UniversalTelegramBot.h>
+#include <Arduino.h>
 
-void handleEvent(bool kiuas, int temperature, UniversalTelegramBot bot);
+void handleEvent(bool kiuas, uint8_t temperature, UniversalTelegramBot bot);
 bool getKiuas();
-int getTemperature();
+uint8_t getTemperature();
