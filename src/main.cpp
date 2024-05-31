@@ -1,14 +1,13 @@
 
+#include <UniversalTelegramBot.h>
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
-#include <UniversalTelegramBot.h>
 
 // Handlers
-#include <handle/message.h>
-#include <handle/event.h>
-
 #include <../.env.h>
 #include <Arduino.h>
+#include <handle/event.h>
+#include <handle/message.h>
 
 // Mean time between scan messages
 const unsigned long BOT_MTBS = 1000;
@@ -25,19 +24,19 @@ unsigned long bot_lasttime;
 // Last time events scan has been done
 unsigned long event_lasttime;
 
-void setup()
-{
+void setup() {
   Serial.begin(9600);
   Serial.println();
 
   // Attempt to connect to Wifi network:
-  configTime(0, 0, "pool.ntp.org", "fi.pool.ntp.org", "time.mikes.fi"); // Get UTC time via NTP
-  secured_client.setCACert(TELEGRAM_CERTIFICATE_ROOT);                  // Add root certificate for api.telegram.org
+  configTime(0, 0, "pool.ntp.org", "fi.pool.ntp.org",
+             "time.mikes.fi");  // Get UTC time via NTP
+  secured_client.setCACert(
+      TELEGRAM_CERTIFICATE_ROOT);  // Add root certificate for api.telegram.org
   Serial.print("Connecting to Wifi SSID ");
   Serial.print(WIFI_SSID);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  while (WiFi.status() != WL_CONNECTED)
-  {
+  while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
     delay(50);
   }
@@ -47,28 +46,22 @@ void setup()
   bot.sendMessage(MAINTENANCE_CHAT, "Saunatonttu on käynnistynyt.", "Markdown");
 }
 
-void loop()
-{
-
+void loop() {
   // Handle events
   bool kiuas = false;
-  int temperature = 0;
+  float temperature = 0.0;
 
-  if (millis() - event_lasttime > EVENT_MTBS)
-  {
+  if (millis() - event_lasttime > EVENT_MTBS) {
     handleEvent(kiuas, temperature, bot);
     event_lasttime = millis();
   }
 
   // Handle incoming messages
-  if (millis() - bot_lasttime > BOT_MTBS)
-  {
+  if (millis() - bot_lasttime > BOT_MTBS) {
     int numNewMessages = bot.getUpdates(bot.last_message_received + 1);
 
-    while (numNewMessages)
-    {
-      for (int i = 0; i < numNewMessages; i++)
-      {
+    while (numNewMessages) {
+      for (int i = 0; i < numNewMessages; i++) {
         handleMessage(bot, bot.messages[i]);
       }
       numNewMessages = bot.getUpdates(bot.last_message_received + 1);
